@@ -1,0 +1,205 @@
+
+* {
+    font-family: "Myriad Pro", sans-serif;
+}
+
+body {
+    background: none;
+    overflow: hidden;
+    overflow-y: auto;
+    margin: 0px;
+    padding: 0px;
+    background-color: #FFFFFF;
+}
+
+input {
+    width: 150px;
+}
+
+#topo {
+    width: 100%;
+    height: 50px;
+    margin: 0px auto;
+    text-align: left;
+    color: #FFFFFF;
+    background-color: #5C26FF;
+}
+
+#topo p {
+    color: #FFFFFF;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 15px 10px;
+}
+
+#data-estados {
+    text-align: center;
+}
+
+.div-insert{
+    margin: 10px auto;
+    padding: 10px;
+    width: 98%;
+    height: 110px;
+    background-color: #AAAAAA;
+    border: solid #5C26FF 1px;
+}
+
+.div-inputs-insert {
+    float: left;
+    width: 70%;
+}
+
+.div-button-insert {
+    text-align: center;
+    float: left;
+    width: 30%;
+}
+
+.div-search {
+    margin: 10px auto;
+    padding: 10px;
+    width: 98%;
+    height: 60px;
+    background-color: #FFFFFF;
+    border: solid #5C26FF 1px;
+}
+
+.div-order {
+    margin: 10px auto;
+    padding: 10px;
+    width: 98%;
+    height: 50px;
+    background-color: #EFBFFF;
+    border: solid #5C26FF 1px;
+}
+
+.div-data {
+    margin: 10px auto;
+    padding: 0px;
+    width: 98%;
+    height: auto;
+    background-color: #FFFFFF;
+    border: none;
+}
+
+#input-insert-estado,
+#input-insert-estado-sigla,
+#input-insert-cidade,
+#input-insert-cidade-estado {
+    width: 100%;
+    height: 40px;
+    float: left;
+}
+
+#input-insert-estado-sigla,
+#input-insert-cidade-estado {
+    margin-top: 5px;
+}
+
+
+#button-insert-estado,
+#button-insert-cidade {
+    width: 95%;
+    height: 85px;
+    float: right;
+    font-size: 20px;
+}
+
+#input-search-estado,
+#input-search-cidade {
+    width: 70%;
+    height: 40px;
+    float: left;
+}
+
+#button-search-estado,
+#button-search-cidade {
+    width: 28%;
+    height: 40px;
+    float: right;
+}
+
+#div-order-estados,
+#div-order-cidades {
+
+}
+
+#div-order-estados span,
+#div-order-cidades span {
+    font-size: 17px;
+    margin: 5px 10px 0px 5px;
+    float: left;
+}
+
+#select-estado,
+#select-cidade {
+    float: right;
+    height: 30px;
+    width: 60%;
+}
+
+#div-tb-estados,
+#div-tb-cidades {
+
+}
+
+#tb_estados thead,
+#tb_cidades thead {
+    height: 50px;
+    vertical-align: middle;
+    background-color: #5C26FF;
+    color: #FFFFFF;
+}
+
+#div-lock-screen {
+    background-color: #000000;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 10000;
+    top: 0px;
+    left: 0px;
+    display: none;
+    opacity: 0.8;
+}
+
+#div-details {
+    background-color: #FFFFFF;
+    width: 200px;
+    height: 300px;
+    padding: 20px;
+    position: fixed;
+    z-index: 22000;
+    top: 100px;
+    left: 0px;
+    display: none;
+}
+
+#div-details .btn {
+    height: 50px;
+    width: 100%;
+}
+
+#div-changes {
+    background-color: #FFFFFF;
+    width: 400px;
+    height: 300px;
+    padding: 20px;
+    position: fixed;
+    z-index: 20000;
+    top: 100px;
+    left: 0px;
+    display: none;
+}
+
+#div-changes .inputt {
+    width: 100%;
+    height: 30px;
+}
+
+#div-changes .btn {
+    width: 95px;
+    height: 50px;
+    margin: 15px 0px 0px 18px;
+}

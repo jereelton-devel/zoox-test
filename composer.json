@@ -1,0 +1,12 @@
+{
+    "name": "jereelton-devel/zoox-test",
+    "description": "This project is only a test",
+    "type": "Project",
+    "authors": [
+        {
+            "name": "Jereelton Teixeira",
+            "email": "jereelton@gmail.com"
+        }
+    ],
+    "require": {}
+}
