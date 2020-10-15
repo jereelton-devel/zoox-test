@@ -88,8 +88,7 @@
                         <th class="text-center">Sigla</th>
                         <th class="text-center">Criado em</th>
                         <th class="text-center">Atualizado em</th>
-                        <th class="text-center">[-]</th>
-                        <th class="text-center">[+]</th>
+                        <th colspan="2" class="text-center">Ação</th>
                     </thead>
                     <tbody id="tbody_estados">
                     </tbody>
@@ -134,8 +133,7 @@
                         <th class="text-center">Sigla</th>
                         <th class="text-center">Criado em</th>
                         <th class="text-center">Atualizado em</th>
-                        <th class="text-center">[-]</th>
-                        <th class="text-center">[+]</th>
+                        <th colspan="2" class="text-center">Ação</th>
                     </thead>
                     <tbody id="tbody_cidades">
                     </tbody>

@@ -1,6 +1,21 @@
 
 $(document).ready(function(){
 
+    //TESTES de requisição
+    $.ajax({
+        type: "POST",
+        url: "http://zoox.api.local/post",
+        data: "action=save",
+        dataType: "text",
+        async: false,
+        success: function(resp) {
+            console.log(resp);
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+
     loadDataEstados();
     loadDataCidades();
     configureMiddlePosition('div-details','200','300');
@@ -296,8 +311,8 @@ function loadDataEstados() {
         "                            <td class=\"text-center\">SP</td>\n" +
         "                            <td class=\"text-center\">10/10/2020</td>\n" +
         "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
+        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                        </tr>\n" +
         "                        <tr>\n" +
         "                            <td class=\"text-center\">2</td>\n" +
@@ -305,8 +320,8 @@ function loadDataEstados() {
         "                            <td class=\"text-center\">SP</td>\n" +
         "                            <td class=\"text-center\">10/10/2020</td>\n" +
         "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
+        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                        </tr>\n" +
         "                        <tr>\n" +
         "                            <td class=\"text-center\">3</td>\n" +
@@ -314,8 +329,8 @@ function loadDataEstados() {
         "                            <td class=\"text-center\">SP</td>\n" +
         "                            <td class=\"text-center\">10/10/2020</td>\n" +
         "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
+        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                        </tr>\n" +
         "                        <tr>\n" +
         "                            <td class=\"text-center\">4</td>\n" +
@@ -323,8 +338,8 @@ function loadDataEstados() {
         "                            <td class=\"text-center\">SP</td>\n" +
         "                            <td class=\"text-center\">10/10/2020</td>\n" +
         "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
+        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                        </tr>\n" +
         "                        <tr>\n" +
         "                            <td class=\"text-center\">5</td>\n" +
@@ -332,8 +347,8 @@ function loadDataEstados() {
         "                            <td class=\"text-center\">SP</td>\n" +
         "                            <td class=\"text-center\">10/10/2020</td>\n" +
         "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
+        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                        </tr>\n" +
         "                        <tr>\n" +
         "                            <td class=\"text-center\">6</td>\n" +
@@ -341,8 +356,8 @@ function loadDataEstados() {
         "                            <td class=\"text-center\">SP</td>\n" +
         "                            <td class=\"text-center\">10/10/2020</td>\n" +
         "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
+        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                        </tr>");
 
 }
@@ -357,8 +372,8 @@ function loadDataCidades() {
         "                        <td class=\"text-center\">SP</td>\n" +
         "                        <td class=\"text-center\">10/10/2020</td>\n" +
         "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
+        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                    </tr>\n" +
         "                    <tr>\n" +
         "                        <td class=\"text-center\">2</td>\n" +
@@ -366,8 +381,8 @@ function loadDataCidades() {
         "                        <td class=\"text-center\">SP</td>\n" +
         "                        <td class=\"text-center\">10/10/2020</td>\n" +
         "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
+        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                    </tr>\n" +
         "                    <tr>\n" +
         "                        <td class=\"text-center\">3</td>\n" +
@@ -375,8 +390,8 @@ function loadDataCidades() {
         "                        <td class=\"text-center\">SP</td>\n" +
         "                        <td class=\"text-center\">10/10/2020</td>\n" +
         "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
+        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                    </tr>\n" +
         "                    <tr>\n" +
         "                        <td class=\"text-center\">4</td>\n" +
@@ -384,8 +399,8 @@ function loadDataCidades() {
         "                        <td class=\"text-center\">SP</td>\n" +
         "                        <td class=\"text-center\">10/10/2020</td>\n" +
         "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
+        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                    </tr>\n" +
         "                    <tr>\n" +
         "                        <td class=\"text-center\">5</td>\n" +
@@ -393,8 +408,8 @@ function loadDataCidades() {
         "                        <td class=\"text-center\">SP</td>\n" +
         "                        <td class=\"text-center\">10/10/2020</td>\n" +
         "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
+        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                    </tr>\n" +
         "                    <tr>\n" +
         "                        <td class=\"text-center\">6</td>\n" +
@@ -402,8 +417,8 @@ function loadDataCidades() {
         "                        <td class=\"text-center\">SP</td>\n" +
         "                        <td class=\"text-center\">10/10/2020</td>\n" +
         "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
+        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
         "                    </tr>");
 
 }

@@ -203,3 +203,13 @@ input {
     height: 50px;
     margin: 15px 0px 0px 18px;
 }
+
+#tbody_estados img{
+    width: 20px;
+    height: 20px;
+}
+
+#tbody_cidades img{
+    width: 20px;
+    height: 20px;
+}
