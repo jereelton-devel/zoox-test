@@ -89,7 +89,11 @@
             </div>
 
             <div id="div-order-estados" class="div-order">
-                <span>Ordernar por</span>
+                <span>Ordernar</span>
+
+                <input type="button" class="btn btn-warning button-min" name="button-order-estado" id="button-order-estado_asc" value="A-Z">
+                <input type="button" class="btn btn-info button-min" name="button-order-estado" id="button-order-estado_desc" value="Z-A">
+
                 <select id="select-estado">
                     <option value="id">Id</option>
                     <option value="nome">Nome</option>
@@ -149,7 +153,11 @@
             </div>
 
             <div id="div-order-cidades" class="div-order">
-                <span>Ordernar por</span>
+                <span>Ordernar</span>
+
+                <input type="button" class="btn btn-warning button-min" name="button-order-cidade" id="button-order-cidade_asc" value="A-Z">
+                <input type="button" class="btn btn-info button-min" name="button-order-cidade" id="button-order-cidade_desc" value="Z-A">
+
                 <select id="select-cidade">
                     <option value="id">Id</option>
                     <option value="nome">Nome</option>

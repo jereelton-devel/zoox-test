@@ -82,7 +82,6 @@ $(document).ready(function(){
         }
 
         requestDataInsert("estado", nome, sigla);
-        screenClear();
     });
 
     $("#button-insert-cidade").on('click', function(){
@@ -100,7 +99,6 @@ $(document).ready(function(){
         }
 
         requestDataInsert("cidade", nome, sigla);
-        screenClear();
     });
 
     $("#button-search-estado").on('click', function(){
@@ -131,14 +129,34 @@ $(document).ready(function(){
 
     });
 
-    $("#select-estado").on('change', function(){//TODO: Ordenar ASC e DESC
+    /*$("#select-estado").on('change', function(){//TODO: Ordenar ASC e DESC
         var order = $(this).val();
         requestDataSearchOrder("estado", order);
+    });*/
+
+    $("#button-order-estado_asc").on('click', function(){
+        var order = $("#select-estado").val();
+        requestDataSearchOrder("estado", order, 'asc');
     });
 
-    $("#select-cidade").on('change', function(){//TODO: Ordenar ASC e DESC
+    $("#button-order-estado_desc").on('click', function(){
+        var order = $("#select-estado").val();
+        requestDataSearchOrder("estado", order, 'desc');
+    });
+
+    /*$("#select-cidade").on('change', function(){//TODO: Ordenar ASC e DESC
         var order = $(this).val();
         requestDataSearchOrder("cidade", order);
+    });*/
+
+    $("#button-order-cidade_asc").on('click', function(){
+        var order = $("#select-cidade").val();
+        requestDataSearchOrder("cidade", order, 'asc');
+    });
+
+    $("#button-order-cidade_desc").on('click', function(){
+        var order = $("#select-cidade").val();
+        requestDataSearchOrder("cidade", order, 'desc');
     });
 });
 
@@ -152,12 +170,22 @@ function requestDataInsert(target, nome, sigla) {
         async: false,
         success: function(resp) {
 
+            if(resp.msgSuccess) {
+                toastr.success(resp.msgSuccess);
+            }
+
+            if(resp.msgError) {
+                toastr.error(resp.msgError);
+                return false;
+            }
+
             if(target == 'estado') {
                 loadDataEstados();
             }
             if(target == 'cidade') {
                 loadDataCidades();
             }
+            screenClear();
         },
         erro: function(resp){
             console.erro(resp);
@@ -292,12 +320,12 @@ function requestDataSearch(target, data) {
     });
 }
 
-function requestDataSearchOrder(target, order) {
+function requestDataSearchOrder(target, order, type) {
 
     $.ajax({
         type: "GET",
         url: "app/ZooxTestRequestApi.php",
-        data: "action=list_"+target+"_ordenado&order="+order,
+        data: "action=list_"+target+"_ordenado&order="+order+"&type="+type,
         dataType: "json",
         async: false,
         success: function(resp) {

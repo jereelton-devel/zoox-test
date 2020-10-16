@@ -31,9 +31,9 @@ class ZooxTestRequestApi
         $this->url = "http://zoox.api.local/action/insert/{$target}/{$name}/{$sigla}";
     }
 
-    public function setListOrderCollectionUrl($target, $order)
+    public function setListOrderCollectionUrl($target, $order, $type)
     {
-        $this->url = "http://zoox.api.local/action/listorder/{$target}/{$order}";
+        $this->url = "http://zoox.api.local/action/listorder/{$target}/{$order}/{$type}";
     }
 
     public function setListCollectionUrl($target)
@@ -121,7 +121,7 @@ if($action == "list_estado_especifico") {
 if($action == "list_estado_ordenado") {
 
     $listEstadoOrder = new ZooxTestRequestApi();
-    $listEstadoOrder->setListOrderCollectionUrl("estado", $order);
+    $listEstadoOrder->setListOrderCollectionUrl("estado", $order, $type);
     echo $listEstadoOrder->sendRequest();
     exit;
 
@@ -184,7 +184,7 @@ if($action == "list_cidade_especifico") {
 if($action == "list_cidade_ordenado") {
 
     $listCidadeOrder = new ZooxTestRequestApi();
-    $listCidadeOrder->setListOrderCollectionUrl("cidade", $order);
+    $listCidadeOrder->setListOrderCollectionUrl("cidade", $order, $type);
     echo $listCidadeOrder->sendRequest();
     exit;
 
