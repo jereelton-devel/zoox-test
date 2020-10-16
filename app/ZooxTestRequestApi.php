@@ -5,10 +5,6 @@ class ZooxTestRequestApi
     private $headers;
     private $token;
     private $url;
-    private $data;
-    private $data1;
-    private $data2;
-    private $collection;
     private $response;
 
     public function setDeleteCollectionUrl($target, $id)
