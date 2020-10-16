@@ -1,25 +1,11 @@
 
 $(document).ready(function(){
 
-    //TESTES de requisição
-    $.ajax({
-        type: "POST",
-        url: "http://zoox.api.local/post",
-        data: "action=save",
-        dataType: "text",
-        async: false,
-        success: function(resp) {
-            console.log(resp);
-        },
-        erro: function(resp){
-            console.erro(resp);
-        }
-    });
+    configureMiddlePosition('div-details','200','300');
+    configureMiddlePosition('div-changes','400','300');
 
     loadDataEstados();
     loadDataCidades();
-    configureMiddlePosition('div-details','200','300');
-    configureMiddlePosition('div-changes','400','300');
 
     $("#button-cancelar").on('click', function(){
         $("#div-lock-screen").addClass('hide');
@@ -56,51 +42,91 @@ $(document).ready(function(){
     });
 
     $("#button-insert-estado").on('click', function(){
-        alert("Inserir Estado");
+        var nome = $("#input-insert-estado").val();
+        var sigla = $("#input-insert-estado-sigla").val();
 
-        //TODO: Validar formulario, verificar existente e inserir na base do MongoDB
+        if(nome == '' || sigla == '') {
+            alert("Infome o Nome e a sigla do Estado");
+            return false;
+        }
+
+        if(sigla.length > 2){
+            alert("Sigla Invalida");
+            return false;
+        }
+
+        requestDataInsert("estado", nome, sigla);
+
+        $("#input-insert-estado").val("");
+        $("#input-insert-estado-sigla").val("");
     });
 
     $("#button-insert-cidade").on('click', function(){
-        alert("Inserir Cidade");
+        var nome = $("#input-insert-cidade").val();
+        var sigla = $("#input-insert-cidade-estado").val();
 
-        //TODO: Validar formulario, verificar existente e inserir na base do MongoDB
+        if(nome == '' || sigla == '') {
+            alert("Infome o Nome e o Estado da Cidade");
+            return false;
+        }
+
+        if(sigla.length > 2){
+            alert("Estado Invalido");
+            return false;
+        }
+
+        requestDataInsert("cidade", nome, sigla);
+
+        $("#input-insert-cidade").val("");
+        $("#input-insert-cidade-estado").val("");
     });
 
     $("#button-search-estado").on('click', function(){
-        alert("Buscar Estado");
+        var data = $("#input-search-estado").val();
 
-        //TODO: Buscar o estado pelo nome ou pela sigla
+        if(data == '') {
+            alert("Informe um valor para buscar");
+            return false;
+        }
+
+        requestDataSearch("estado", data);
+
+        $("#div-tb-estados-hide").show();
+
     });
 
     $("#button-search-cidade").on('click', function(){
-        alert("Buscar Cidade");
+        var data = $("#input-search-cidade").val();
 
-        //TODO: Buscar a cidade pelo nome ou pelo estado
+        if(data == '') {
+            alert("Informe um valor para buscar");
+            return false;
+        }
+
+        requestDataSearch("cidade", data);
+
+        $("#div-tb-cidades-hide").show();
+
     });
 
     $("#select-estado").on('change', function(){
-        alert("Ordenar Estado");
-
-        //TODO: Listar novamente os dados ordenados pela opção escolhida
+        var order = $(this).val();
+        requestDataSearchOrder("estados", order);
     });
 
     $("#select-cidade").on('change', function(){
-        alert("Ordenar Cidade");
-
-        //TODO: Listar novamente os dados ordenados pela opção escolhida
+        var order = $(this).val();
+        requestDataSearchOrder("cidades", order);
     });
 
     $("[data-estado]").on('click', function(){
         var id = $(this).parent('tr').children('td')[0].textContent;
-        alert("Detalhar Estado ID: " + id);
+        requestDataListOne("estado_especifico", id);
 
         $("#div-lock-screen").removeClass('hide');
         $("#div-lock-screen").show();
         $("#div-details").removeClass('hide');
         $("#div-details").show();
-
-        //TODO: Listar dados do MongoDB com o id e apresentar no modal
     });
 
     $("[data-change-estado]").on('click', function(){
@@ -117,14 +143,12 @@ $(document).ready(function(){
 
     $("[data-cidade]").on('click', function(){
         var id = $(this).parent('tr').children('td')[0].textContent;
-        alert("Detalhar Cidade ID: " + id);
+        requestDataListOne("cidade_especifica", id);
 
         $("#div-lock-screen").removeClass('hide');
         $("#div-lock-screen").show();
         $("#div-details").removeClass('hide');
         $("#div-details").show();
-
-        //TODO: Listar dados do MongoDB com o id e apresentar no modal
     });
 
     $("[data-change-cidade]").on('click', function(){
@@ -138,289 +162,256 @@ $(document).ready(function(){
 
         //TODO: Obter os dados em tela, enviar para o modal e guardar o ID referente para poder realizar a atualização ou remoção do item
     });
-
-
-    var controlPlayer = null;
-
-    $("#tb_slim_player").hide();
-
-    function getPlayerResult() {
-
-        $.ajax({
-            type: "GET",
-            url: "http://localhost/webdev/testes/slim-player-demo/api3/info/player-status",
-            data: "action=player-status",
-            dataType: "text",
-            async: false,
-            success: function(resp) {
-                if(resp === 0) {
-
-                    clearInterval(controlPlayer);
-                    $("#subview").html("O PLAYER NAO ESTA EXECUTANDO...");
-                    console.log(resp);
-
-                } else {
-
-                    $.ajax({
-                        type: "GET",
-                        url: "http://localhost/webdev/testes/slim-player-demo/api3/info/player-result",
-                        data: "action=player-result",
-                        dataType: "text",
-                        success: function(resp) {
-
-                            resp = JSON.parse(resp);
-
-                            if(resp.winner == 'api1') {
-                                playerWin = 'player 1';
-                            } else if(resp.winner == 'api2') {
-                                playerWin = 'player 2';
-                            } else {
-                                playerWin = resp.winner;
-                            }
-
-                            winner1 = (resp.winner == 'api1') ? 'winner' : '';
-                            winner2 = (resp.winner == 'api2') ? 'winner' : '';
-
-                            $("#tbody_slim_player").append("" +
-                                "<tr>" +
-                                "<td>"+resp.id+"</td>" +
-                                "<td class='"+winner1+"'>"+resp.api1_val+"</td>" +
-                                "<td>"+resp.api3_val+"</td>" +
-                                "<td class='"+winner2+"'>"+resp.api2_val+"</td>" +
-                                "<td class='text-uppercase'>"+playerWin+"" +
-                                "</tr>");
-
-                            //console.log(typeof resp, resp);
-                        }
-                    });
-
-                }
-            }
-        });
-    }
-
-    $("#bt-start-player").on('click', function() {
-
-        $("#tb_slim_player").removeClass('hide');
-        $("#tb_slim_player").show();
-
-        $("#subview").html("WELCOME TO SLIM PLAYER");
-
-        $.ajax({
-            type: "GET",
-            url: "http://localhost/webdev/testes/slim-player-demo/api3/controll/player-start",
-            data: "action=player-start",
-            dataType: "text",
-            success: function(resp) {
-                if(resp.search('Erro:') === -1) {
-                    $("#subview").html(resp);
-                    //console.log(resp);
-                } else {
-                    $("#subview").html(resp);
-                    return false;
-                }
-            }
-        });
-
-        controlPlayer = setInterval(getPlayerResult, 3000);
-        $("#bt-start-player").prop('disabled', true);
-        $("#bt-stop-player").prop('disabled', false);
-        $("#bt-reset-player").prop('disabled', true);
-
-    });
-
-    $("#bt-stop-player").on('click', function() {
-        if(confirm("Deseja cancelar o jogo ?")) {
-            $.ajax({
-                type: "GET",
-                url: "http://localhost/webdev/testes/slim-player-demo/api3/controll/player-stop",
-                data: "action=player-stop",
-                dataType: "text",
-                success: function(resp) {
-
-                    setTimeout(function() {
-                        clearInterval(controlPlayer);
-                        $("#subview").html(resp);
-                        $("#bt-start-player").prop('disabled', false);
-                        $("#bt-stop-player").prop('disabled', true);
-                        $("#bt-reset-player").prop('disabled', false);
-                        //console.log(resp);
-                    }, 3000);
-
-                }
-            });
-        }
-    });
-
-    $("#bt-reset-player").on('click', function() {
-        if(confirm("Deseja resetar o jogo ?")) {
-
-            $.ajax({
-                type: "GET",
-                url: "http://localhost/webdev/testes/slim-player-demo/api3/controll/player-reset",
-                data: "action=player-reset",
-                dataType: "text",
-                success: function(resp) {
-
-                    $.ajax({
-                        type: "GET",
-                        url: "http://localhost/webdev/testes/slim-player-demo/api2/controll/player-reset",
-                        data: "action=player-reset",
-                        dataType: "text",
-                        async: false,
-                        success: function(resp) {
-
-                            $.ajax({
-                                type: "GET",
-                                url: "http://localhost/webdev/testes/slim-player-demo/api1/controll/player-reset",
-                                data: "action=player-reset",
-                                dataType: "text",
-                                async: false,
-                                success: function(resp) {
-                                }
-                            });
-                        }
-                    });
-
-                    $("#subview").html(resp);
-                    $("#tbody_slim_player").html("");
-                    $("#tb_slim_player").hide();
-                    $("#bt-start-player").prop('disabled', false);
-                    $("#bt-stop-player").prop('disabled', true);
-                    $("#bt-reset-player").prop('disabled', true);
-                }
-            });
-        }
-    });
 });
 
-function requestDataInsert(generic_name, sigla, type) {}
+function requestDataInsert(target, nome, sigla) {
+
+    $.ajax({
+        type: "POST",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=insert_"+target+"&nome="+nome+"&sigla="+sigla,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(target == 'estado') {
+                loadDataEstados();
+            }
+            if(target == 'cidade') {
+                loadDataCidades();
+            }
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+}
 
 function requestDataUpdate(id, type) {}
 
 function requestDataDelete(id, type) {}
 
-function requestDataSearch(orderby, type, string) {}
+function requestDataSearch(target, data) {
+
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=search_"+target+"&data="+data,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(resp.length === undefined) {
+                $("#tbody_"+target+"_hide").html("<tr><td colspan='6'>Nada encontrado</td></tr>");
+                return false;
+            }
+
+            $("#tbody_"+target+"_hide").html("");
+
+            if(target == "estado") {
+
+                $.each(resp, function (i, obj) {
+
+                    $("#tbody_estado_hide").append(
+                        "<tr>\n" +
+                        "<td class=\"text-center\">" + obj.id + "</td>\n" +
+                        "<td class=\"text-center\">" + obj.nome + "</td>\n" +
+                        "<td class=\"text-center\">" + obj.sigla + "</td>\n" +
+                        "<td class=\"text-center\">" + obj.data_criacao + "</td>\n" +
+                        "<td class=\"text-center\">" + obj.data_atualizacao + "</td>\n" +
+                        "<td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+                        "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
+                        "</tr>");
+                });
+
+                $("[data-estado]").on('click', function(){
+                    var id = $(this).parent('tr').children('td')[0].textContent;
+                    requestDataListOne("estado_especifico", id);
+
+                    $("#div-lock-screen").removeClass('hide');
+                    $("#div-lock-screen").show();
+                    $("#div-details").removeClass('hide');
+                    $("#div-details").show();
+                });
+            }
+
+            if(target == "cidade") {
+
+                $.each(resp, function(i, obj){
+
+                    $("#tbody_cidade_hide").append(
+                        "<tr>\n" +
+                        "<td class=\"text-center\">"+obj.id+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.nome+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
+                        "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+                        "<td data-change-ciade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
+                        "</tr>");
+                });
+
+                $("[data-cidade]").on('click', function(){
+                    var id = $(this).parent('tr').children('td')[0].textContent;
+                    requestDataListOne("cidade_especifica", id);
+
+                    $("#div-lock-screen").removeClass('hide');
+                    $("#div-lock-screen").show();
+                    $("#div-details").removeClass('hide');
+                    $("#div-details").show();
+                });
+            }
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+}
+
+function requestDataSearchOrder(target, order) {
+
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=list_"+target+"_ordenado&order="+order,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(target == "estados") {
+
+                $("#tbody_estados").html("");
+
+                $.each(resp, function (i, obj) {
+
+                    $("#tbody_" + target).append(
+                        "<tr>\n" +
+                        "<td class=\"text-center\">" + obj.id + "</td>\n" +
+                        "<td class=\"text-center\">" + obj.nome + "</td>\n" +
+                        "<td class=\"text-center\">" + obj.sigla + "</td>\n" +
+                        "<td class=\"text-center\">" + obj.data_criacao + "</td>\n" +
+                        "<td class=\"text-center\">" + obj.data_atualizacao + "</td>\n" +
+                        "<td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+                        "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
+                        "</tr>");
+                });
+            }
+            if(target == "cidades") {
+
+                $("#tbody_cidades").html("");
+
+                $.each(resp, function(i, obj){
+
+                    $("#tbody_cidades").append(
+                        "<tr>\n" +
+                        "<td class=\"text-center\">"+obj.id+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.nome+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
+                        "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+                        "<td data-change-ciade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
+                        "</tr>");
+                });
+            }
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+
+}
+
+function requestDataListOne(target, id) {
+
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=list_"+target+"&id="+id,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            $.each(resp, function(i, obj){
+
+                $("#span-id-detail").html(obj.id);
+                $("#span-nome-detail").html(obj.nome);
+                $("#span-sigla-detail").html(obj.sigla);
+                $("#span-dtc-detail").html(obj.data_criacao);
+                $("#span-dtu-detail").html(obj.data_atualizacao);
+
+            });
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+
+}
 
 function loadDataEstados() {
 
-    //TODO: Iniciar listagem dos estados assim que a tela for carregada
-    $("#tbody_estados").html("<tr>\n" +
-        "                            <td class=\"text-center\">1</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">2</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">3</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">4</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">5</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">6</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                            <td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                        </tr>");
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=list_estados",
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            $("#tbody_estados").html("");
+
+            $.each(resp, function(i, obj){
+
+                $("#tbody_estados").append(
+                    "<tr>\n" +
+                        "<td class=\"text-center\">"+obj.id+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.nome+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
+                        "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
+                        "<td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+                        "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
+                    "</tr>");
+            });
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
 
 }
 
 function loadDataCidades() {
 
-    //TODO: Iniciar listagem das cidade assim que a tela for carregada
-    $("#tbody_cidades").html("\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">1</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">2</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">3</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">4</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">5</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">6</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-        "                        <td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-        "                    </tr>");
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=list_cidades",
+        dataType: "json",
+        async: false,
+        success: function(resp) {
 
+            $("#tbody_cidades").html("");
+
+            $.each(resp, function(i, obj){
+
+                $("#tbody_cidades").append(
+                    "<tr>\n" +
+                    "<td class=\"text-center\">"+obj.id+"</td>\n" +
+                    "<td class=\"text-center\">"+obj.nome+"</td>\n" +
+                    "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
+                    "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
+                    "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
+                    "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
+                    "<td data-change-ciade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
+                    "</tr>");
+            });
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
 }
 
 function configureMiddlePosition(el_id, element_width, element_height) {

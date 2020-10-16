@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Slim Player</title>
+	<title>Zoox Dash</title>
 
     <link rel="stylesheet" href="./css/font-awesome.min.css" type="text/css" />
     <link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css" />
@@ -69,6 +69,21 @@
                 <input type="button" class="btn btn-default" name="button-search-estado" id="button-search-estado" value="Buscar" />
             </div>
 
+            <div id="div-tb-estados-hide" class="div-data">
+                <table class="table table-hover text-center" id="tb_estados_hide">
+                    <thead>
+                    <th class="text-center">Id</th>
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">Sigla</th>
+                    <th class="text-center">Criado em</th>
+                    <th class="text-center">Atualizado em</th>
+                    <th colspan="2" class="text-center">Ação</th>
+                    </thead>
+                    <tbody id="tbody_estado_hide">
+                    </tbody>
+                </table>
+            </div>
+
             <div id="div-order-estados" class="div-order">
                 <span>Ordernar por</span>
                 <select id="select-estado">
@@ -112,6 +127,21 @@
             <div id="div-search-cidades" class="div-search">
                 <input type="text" name="input-search-cidade" id="input-search-cidade" value="" placeholder="Informe uma Cidade para buscar" />
                 <input type="button" class="btn btn-default" name="button-search-cidade" id="button-search-cidade" value="Buscar" />
+            </div>
+
+            <div id="div-tb-cidades-hide" class="div-data">
+                <table class="table table-hover text-center" id="tb_cidades_hide">
+                    <thead>
+                    <th class="text-center">Id</th>
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">Sigla</th>
+                    <th class="text-center">Criado em</th>
+                    <th class="text-center">Atualizado em</th>
+                    <th colspan="2" class="text-center">Ação</th>
+                    </thead>
+                    <tbody id="tbody_cidade_hide">
+                    </tbody>
+                </table>
             </div>
 
             <div id="div-order-cidades" class="div-order">

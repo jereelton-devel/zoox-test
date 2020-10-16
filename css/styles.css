@@ -141,7 +141,14 @@ input {
 
 #div-tb-estados,
 #div-tb-cidades {
+    height: 300px;
+    overflow: auto;
+}
 
+#div-tb-estados-hide,
+#div-tb-cidades-hide {
+    display: none;
+    background-color: #FDFDFD;
 }
 
 #tb_estados thead,
@@ -204,12 +211,16 @@ input {
     margin: 15px 0px 0px 18px;
 }
 
-#tbody_estados img{
+#tbody_estados img,
+#tbody_estado_hide img
+{
     width: 20px;
     height: 20px;
 }
 
-#tbody_cidades img{
+#tbody_cidades img,
+#tbody_cidade_hide img
+{
     width: 20px;
     height: 20px;
 }
