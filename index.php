@@ -58,49 +58,57 @@
 
         <div class="col-sm-5 col-md-5 col-xl-12 col-xs-12" id="data-estados">
 
-            <div id="div-insert-estados" class="div-insert">
-                <div class="div-inputs-insert">
-                    <input type="text" name="input-insert-estado" id="input-insert-estado" value="" placeholder="Informe um Estado para inserir" />
-                    <input type="text" name="input-insert-estado-sigla" id="input-insert-estado-sigla" value="" placeholder="Informe a sigla do Estado" />
+            <div id="div-toogle-tools-estado">
+                <input type="button" name="button-toogle-tools-estado" id="button-toogle-tools-estado" value="Controle e Ferramentas - Estados" />
+            </div>
+
+            <div id="div-container-tools-estados">
+
+                <div id="div-insert-estados" class="div-insert">
+                    <div class="div-inputs-insert">
+                        <input type="text" name="input-insert-estado" id="input-insert-estado" value="" placeholder="Informe um Estado para inserir" />
+                        <input type="text" name="input-insert-estado-sigla" id="input-insert-estado-sigla" value="" placeholder="Informe a sigla do Estado" />
+                    </div>
+                    <div class="div-button-insert">
+                        <input type="button" class="btn btn-success" name="button-insert-estado" id="button-insert-estado" value="Inserir" />
+                    </div>
                 </div>
-                <div class="div-button-insert">
-                    <input type="button" class="btn btn-success" name="button-insert-estado" id="button-insert-estado" value="Inserir" />
+
+                <div id="div-search-estados" class="div-search">
+                    <input type="text" name="input-search-estado" id="input-search-estado" value="" placeholder="Informe um Estado para buscar" />
+                    <input type="button" class="btn btn-default" name="button-search-estado" id="button-search-estado" value="Buscar" />
                 </div>
-            </div>
 
-            <div id="div-search-estados" class="div-search">
-                <input type="text" name="input-search-estado" id="input-search-estado" value="" placeholder="Informe um Estado para buscar" />
-                <input type="button" class="btn btn-default" name="button-search-estado" id="button-search-estado" value="Buscar" />
-            </div>
+                <div id="div-tb-estados-hide" class="div-data">
+                    <table class="table table-hover text-center" id="tb_estados_hide">
+                        <thead>
+                        <th class="text-center">Id</th>
+                        <th class="text-center">Nome</th>
+                        <th class="text-center">Sigla</th>
+                        <th class="text-center">Criado em</th>
+                        <th class="text-center">Atualizado em</th>
+                        <th colspan="2" class="text-center">Ação</th>
+                        </thead>
+                        <tbody id="tbody_estado_hide">
+                        </tbody>
+                    </table>
+                </div>
 
-            <div id="div-tb-estados-hide" class="div-data">
-                <table class="table table-hover text-center" id="tb_estados_hide">
-                    <thead>
-                    <th class="text-center">Id</th>
-                    <th class="text-center">Nome</th>
-                    <th class="text-center">Sigla</th>
-                    <th class="text-center">Criado em</th>
-                    <th class="text-center">Atualizado em</th>
-                    <th colspan="2" class="text-center">Ação</th>
-                    </thead>
-                    <tbody id="tbody_estado_hide">
-                    </tbody>
-                </table>
-            </div>
+                <div id="div-order-estados" class="div-order">
+                    <span>Ordernar</span>
 
-            <div id="div-order-estados" class="div-order">
-                <span>Ordernar</span>
+                    <input type="button" class="btn btn-warning button-min" name="button-order-estado" id="button-order-estado_asc" value="A-Z">
+                    <input type="button" class="btn btn-info button-min" name="button-order-estado" id="button-order-estado_desc" value="Z-A">
 
-                <input type="button" class="btn btn-warning button-min" name="button-order-estado" id="button-order-estado_asc" value="A-Z">
-                <input type="button" class="btn btn-info button-min" name="button-order-estado" id="button-order-estado_desc" value="Z-A">
+                    <select id="select-estado">
+                        <option value="id">Id</option>
+                        <option value="nome">Nome</option>
+                        <option value="sigla">Sigla</option>
+                        <option value="data_criacao">Data Criação</option>
+                        <option value="data-atualizacao">Data Atualização</option>
+                    </select>
+                </div>
 
-                <select id="select-estado">
-                    <option value="id">Id</option>
-                    <option value="nome">Nome</option>
-                    <option value="sigla">Sigla</option>
-                    <option value="data_criacao">Data Criação</option>
-                    <option value="data-atualizacao">Data Atualização</option>
-                </select>
             </div>
 
             <div id="div-tb-estados" class="div-data">
@@ -122,49 +130,57 @@
 
         <div class="col-sm-5 col-md-5 col-xl-12 col-xs-12" id="data-cidades">
 
-            <div id="div-insert-cidades" class="div-insert">
-                <div class="div-inputs-insert">
-                    <input type="text" name="input-insert-cidade" id="input-insert-cidade" value="" placeholder="Informe um Estado para inserir" />
-                    <input type="text" name="input-insert-cidade-estado" id="input-insert-cidade-estado" value="" placeholder="Informe o Estado da cidade" />
+            <div id="div-toogle-tools-cidade">
+                <input type="button" name="button-toogle-tools-cidade" id="button-toogle-tools-cidade" value="Controle e Ferramentas - Cidades" />
+            </div>
+
+            <div id="div-container-tools-cidades">
+
+                <div id="div-insert-cidades" class="div-insert">
+                    <div class="div-inputs-insert">
+                        <input type="text" name="input-insert-cidade" id="input-insert-cidade" value="" placeholder="Informe um Estado para inserir" />
+                        <input type="text" name="input-insert-cidade-estado" id="input-insert-cidade-estado" value="" placeholder="Informe o Estado da cidade" />
+                    </div>
+                    <div class="div-button-insert">
+                        <input type="button" class="btn btn-success" name="button-insert-cidade" id="button-insert-cidade" value="Inserir" />
+                    </div>
                 </div>
-                <div class="div-button-insert">
-                    <input type="button" class="btn btn-success" name="button-insert-cidade" id="button-insert-cidade" value="Inserir" />
+
+                <div id="div-search-cidades" class="div-search">
+                    <input type="text" name="input-search-cidade" id="input-search-cidade" value="" placeholder="Informe uma Cidade para buscar" />
+                    <input type="button" class="btn btn-default" name="button-search-cidade" id="button-search-cidade" value="Buscar" />
                 </div>
-            </div>
 
-            <div id="div-search-cidades" class="div-search">
-                <input type="text" name="input-search-cidade" id="input-search-cidade" value="" placeholder="Informe uma Cidade para buscar" />
-                <input type="button" class="btn btn-default" name="button-search-cidade" id="button-search-cidade" value="Buscar" />
-            </div>
+                <div id="div-tb-cidades-hide" class="div-data">
+                    <table class="table table-hover text-center" id="tb_cidades_hide">
+                        <thead>
+                        <th class="text-center">Id</th>
+                        <th class="text-center">Nome</th>
+                        <th class="text-center">Sigla</th>
+                        <th class="text-center">Criado em</th>
+                        <th class="text-center">Atualizado em</th>
+                        <th colspan="2" class="text-center">Ação</th>
+                        </thead>
+                        <tbody id="tbody_cidade_hide">
+                        </tbody>
+                    </table>
+                </div>
 
-            <div id="div-tb-cidades-hide" class="div-data">
-                <table class="table table-hover text-center" id="tb_cidades_hide">
-                    <thead>
-                    <th class="text-center">Id</th>
-                    <th class="text-center">Nome</th>
-                    <th class="text-center">Sigla</th>
-                    <th class="text-center">Criado em</th>
-                    <th class="text-center">Atualizado em</th>
-                    <th colspan="2" class="text-center">Ação</th>
-                    </thead>
-                    <tbody id="tbody_cidade_hide">
-                    </tbody>
-                </table>
-            </div>
+                <div id="div-order-cidades" class="div-order">
+                    <span>Ordernar</span>
 
-            <div id="div-order-cidades" class="div-order">
-                <span>Ordernar</span>
+                    <input type="button" class="btn btn-warning button-min" name="button-order-cidade" id="button-order-cidade_asc" value="A-Z">
+                    <input type="button" class="btn btn-info button-min" name="button-order-cidade" id="button-order-cidade_desc" value="Z-A">
 
-                <input type="button" class="btn btn-warning button-min" name="button-order-cidade" id="button-order-cidade_asc" value="A-Z">
-                <input type="button" class="btn btn-info button-min" name="button-order-cidade" id="button-order-cidade_desc" value="Z-A">
+                    <select id="select-cidade">
+                        <option value="id">Id</option>
+                        <option value="nome">Nome</option>
+                        <option value="sigla">Estado</option>
+                        <option value="data_criacao">Data Criação</option>
+                        <option value="data-atualizacao">Data Atualização</option>
+                    </select>
+                </div>
 
-                <select id="select-cidade">
-                    <option value="id">Id</option>
-                    <option value="nome">Nome</option>
-                    <option value="sigla">Estado</option>
-                    <option value="data_criacao">Data Criação</option>
-                    <option value="data-atualizacao">Data Atualização</option>
-                </select>
             </div>
 
             <div id="div-tb-cidades" class="div-data">
