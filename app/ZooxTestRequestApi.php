@@ -90,7 +90,7 @@ class ZooxTestRequestApi
         $this->token = "MTIzNDU2Nzg5MA==";
 
         $this->headers = [
-            "Origin: zoox.test.local",
+            "x-Client-Origin: zoox.test.local",
             "x-Api-key: {$this->token}",
         ];
 
