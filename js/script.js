@@ -1,43 +1,68 @@
 
+//Mensageiro (Tooltip style)
+toastr.options = {
+    "closeButton": true, // true/false
+    "debug": false, // true/false
+    "newestOnTop": false, // true/false
+    "progressBar": false, // true/false
+    "positionClass": "toast-bottom-center", // toast-top-right / toast-top-left / toast-bottom-right / toast-bottom-left
+    "preventDuplicates": true, //true/false,
+    "onclick": null,
+    "showDuration": "300", // in milliseconds
+    "hideDuration": "1000", // in milliseconds
+    "timeOut": "5000", // in milliseconds
+    "extendedTimeOut": "1000", // in milliseconds
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+}
+
 $(document).ready(function(){
 
-    configureMiddlePosition('div-details','200','300');
-    configureMiddlePosition('div-changes','400','300');
+    configureMiddlePosition('div-details','180','300');
+    configureMiddlePosition('div-changes','380','300');
 
     loadDataEstados();
     loadDataCidades();
 
-    $("#button-cancelar").on('click', function(){
-        $("#div-lock-screen").addClass('hide');
-        $("#div-lock-screen").hide();
+    eventsRegisters('all');
 
-        $("#div-changes").addClass('hide');
-        $("#div-changes").hide();
+    $("#button-cancelar").on('click', function(){
+        screenClear();
     });
 
     $("#button-ok").on('click', function(){
-        $("#div-lock-screen").addClass('hide');
-        $("#div-lock-screen").hide();
-
-        $("#div-details").addClass('hide');
-        $("#div-details").hide();
+        screenClear();
     });
 
     $("#button-salvar").on('click', function() {
-        alert("Atualizar os dados");
+        var id = $("#hidden-change-id").val();
+        var target = $("#hidden-change-target").val();
+        var nome = $("#input-change-nome").val();
+        var sigla = $("#input-change-sigla").val();
 
-        if(confirm("Deseja mesmo atualizar os dados ?")) {
-            //TODO: Obter o ID armazenado durante a abertura do modal e efetuar a atualização
-            //CHAMADA AJAX - API - SLIM
+        if(nome == "" || sigla == "") {
+            toastr.error("Informe todos os parametros");
+            return false;
+        }
+
+        if(confirm("Deseja mesmo atualizar os dados ? ")) {
+
+            requestDataUpdate(target, id, nome, sigla);
+            screenClear();
+
         }
     });
 
     $("#button-excluir").on('click', function() {
-        alert("Excluir os dados");
+        var id = $("#hidden-change-id").val();
+        var target = $("#hidden-change-target").val();
 
         if(confirm("Deseja mesmo Excluir os dados ?")) {
-            //TODO: Obter o ID armazenado durante a abertura do modal e efetuar o delete
-            //CHAMADA AJAX - API - SLIM
+
+            requestDataDelete(target, id);
+            screenClear();
         }
     });
 
@@ -46,19 +71,18 @@ $(document).ready(function(){
         var sigla = $("#input-insert-estado-sigla").val();
 
         if(nome == '' || sigla == '') {
-            alert("Infome o Nome e a sigla do Estado");
+
+            toastr.error("Infome o Nome e a sigla do Estado");
             return false;
         }
 
         if(sigla.length > 2){
-            alert("Sigla Invalida");
+            toastr.error("Sigla Invalida");
             return false;
         }
 
         requestDataInsert("estado", nome, sigla);
-
-        $("#input-insert-estado").val("");
-        $("#input-insert-estado-sigla").val("");
+        screenClear();
     });
 
     $("#button-insert-cidade").on('click', function(){
@@ -66,26 +90,24 @@ $(document).ready(function(){
         var sigla = $("#input-insert-cidade-estado").val();
 
         if(nome == '' || sigla == '') {
-            alert("Infome o Nome e o Estado da Cidade");
+            toastr.error("Infome o Nome e o Estado da Cidade");
             return false;
         }
 
         if(sigla.length > 2){
-            alert("Estado Invalido");
+            toastr.error("Estado Invalido");
             return false;
         }
 
         requestDataInsert("cidade", nome, sigla);
-
-        $("#input-insert-cidade").val("");
-        $("#input-insert-cidade-estado").val("");
+        screenClear();
     });
 
     $("#button-search-estado").on('click', function(){
         var data = $("#input-search-estado").val();
 
         if(data == '') {
-            alert("Informe um valor para buscar");
+            toastr.error("Informe um valor para buscar");
             return false;
         }
 
@@ -99,7 +121,7 @@ $(document).ready(function(){
         var data = $("#input-search-cidade").val();
 
         if(data == '') {
-            alert("Informe um valor para buscar");
+            toastr.error("Informe um valor para buscar");
             return false;
         }
 
@@ -109,58 +131,14 @@ $(document).ready(function(){
 
     });
 
-    $("#select-estado").on('change', function(){
+    $("#select-estado").on('change', function(){//TODO: Ordenar ASC e DESC
         var order = $(this).val();
-        requestDataSearchOrder("estados", order);
+        requestDataSearchOrder("estado", order);
     });
 
-    $("#select-cidade").on('change', function(){
+    $("#select-cidade").on('change', function(){//TODO: Ordenar ASC e DESC
         var order = $(this).val();
-        requestDataSearchOrder("cidades", order);
-    });
-
-    $("[data-estado]").on('click', function(){
-        var id = $(this).parent('tr').children('td')[0].textContent;
-        requestDataListOne("estado_especifico", id);
-
-        $("#div-lock-screen").removeClass('hide');
-        $("#div-lock-screen").show();
-        $("#div-details").removeClass('hide');
-        $("#div-details").show();
-    });
-
-    $("[data-change-estado]").on('click', function(){
-        var id = $(this).parent('tr').children('td')[0].textContent;
-        alert("Alterar Estado ID: " + id);
-
-        $("#div-lock-screen").removeClass('hide');
-        $("#div-lock-screen").show();
-        $("#div-changes").removeClass('hide');
-        $("#div-changes").show();
-
-        //TODO: Obter os dados em tela, enviar para o modal e guardar o ID referente para poder realizar a atualização ou remoção do item
-    });
-
-    $("[data-cidade]").on('click', function(){
-        var id = $(this).parent('tr').children('td')[0].textContent;
-        requestDataListOne("cidade_especifica", id);
-
-        $("#div-lock-screen").removeClass('hide');
-        $("#div-lock-screen").show();
-        $("#div-details").removeClass('hide');
-        $("#div-details").show();
-    });
-
-    $("[data-change-cidade]").on('click', function(){
-        var id = $(this).parent('tr').children('td')[0].textContent;
-        alert("Alterar Cidade ID: " + id);
-
-        $("#div-lock-screen").removeClass('hide');
-        $("#div-lock-screen").show();
-        $("#div-changes").removeClass('hide');
-        $("#div-changes").show();
-
-        //TODO: Obter os dados em tela, enviar para o modal e guardar o ID referente para poder realizar a atualização ou remoção do item
+        requestDataSearchOrder("cidade", order);
     });
 });
 
@@ -187,9 +165,71 @@ function requestDataInsert(target, nome, sigla) {
     });
 }
 
-function requestDataUpdate(id, type) {}
+function requestDataUpdate(target, id, data1, data2) {
 
-function requestDataDelete(id, type) {}
+    $.ajax({
+        type: "POST",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=update_"+target+"&id="+id+"&data1="+data1+"&data2="+data2,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(resp.msgSuccess) {
+                toastr.success(resp.msgSuccess);
+            }
+
+            if(resp.msgError) {
+                toastr.error(resp.msgError);
+            }
+
+            if(target == "estado") {
+                loadDataEstados();
+            }
+
+            if(target == "cidade") {
+                loadDataCidades();
+            }
+
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+}
+
+function requestDataDelete(target, id) {
+
+    $.ajax({
+        type: "POST",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=delete_"+target+"&id="+id,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(resp.msgSuccess) {
+                toastr.success(resp.msgSuccess);
+            }
+
+            if(resp.msgError) {
+                toastr.error(resp.msgError);
+            }
+
+            if(target == "estado") {
+                loadDataEstados();
+            }
+
+            if(target == "cidade") {
+                loadDataCidades();
+            }
+
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+}
 
 function requestDataSearch(target, data) {
 
@@ -224,15 +264,7 @@ function requestDataSearch(target, data) {
                         "</tr>");
                 });
 
-                $("[data-estado]").on('click', function(){
-                    var id = $(this).parent('tr').children('td')[0].textContent;
-                    requestDataListOne("estado_especifico", id);
-
-                    $("#div-lock-screen").removeClass('hide');
-                    $("#div-lock-screen").show();
-                    $("#div-details").removeClass('hide');
-                    $("#div-details").show();
-                });
+                eventsRegisters('estado');
             }
 
             if(target == "cidade") {
@@ -247,19 +279,11 @@ function requestDataSearch(target, data) {
                         "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
                         "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
                         "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-                        "<td data-change-ciade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
+                        "<td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
                         "</tr>");
                 });
 
-                $("[data-cidade]").on('click', function(){
-                    var id = $(this).parent('tr').children('td')[0].textContent;
-                    requestDataListOne("cidade_especifica", id);
-
-                    $("#div-lock-screen").removeClass('hide');
-                    $("#div-lock-screen").show();
-                    $("#div-details").removeClass('hide');
-                    $("#div-details").show();
-                });
+                eventsRegisters('cidade');
             }
         },
         erro: function(resp){
@@ -278,13 +302,13 @@ function requestDataSearchOrder(target, order) {
         async: false,
         success: function(resp) {
 
-            if(target == "estados") {
+            if(target == "estado") {
 
                 $("#tbody_estados").html("");
 
                 $.each(resp, function (i, obj) {
 
-                    $("#tbody_" + target).append(
+                    $("#tbody_estados").append(
                         "<tr>\n" +
                         "<td class=\"text-center\">" + obj.id + "</td>\n" +
                         "<td class=\"text-center\">" + obj.nome + "</td>\n" +
@@ -295,8 +319,11 @@ function requestDataSearchOrder(target, order) {
                         "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
                         "</tr>");
                 });
+
+                eventsRegisters('estado');
             }
-            if(target == "cidades") {
+
+            if(target == "cidade") {
 
                 $("#tbody_cidades").html("");
 
@@ -310,9 +337,11 @@ function requestDataSearchOrder(target, order) {
                         "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
                         "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
                         "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-                        "<td data-change-ciade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
+                        "<td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
                         "</tr>");
                 });
+
+                eventsRegisters('cidade');
             }
         },
         erro: function(resp){
@@ -322,7 +351,7 @@ function requestDataSearchOrder(target, order) {
 
 }
 
-function requestDataListOne(target, id) {
+function requestDataListOne(target, id, type) {
 
     $.ajax({
         type: "GET",
@@ -332,15 +361,39 @@ function requestDataListOne(target, id) {
         async: false,
         success: function(resp) {
 
-            $.each(resp, function(i, obj){
+            if(type == 'detail') {//Box Detalhes da Entidade
 
-                $("#span-id-detail").html(obj.id);
-                $("#span-nome-detail").html(obj.nome);
-                $("#span-sigla-detail").html(obj.sigla);
-                $("#span-dtc-detail").html(obj.data_criacao);
-                $("#span-dtu-detail").html(obj.data_atualizacao);
+                $.each(resp, function (i, obj) {
 
-            });
+                    $("#span-id-detail").html(obj.id);
+                    $("#span-nome-detail").html(obj.nome);
+                    $("#span-sigla-detail").html(obj.sigla);
+                    $("#span-dtc-detail").html(obj.data_criacao);
+                    $("#span-dtu-detail").html(obj.data_atualizacao);
+
+                });
+
+            }
+
+            if(type == 'edit') { //Box Editar Entidade
+
+                if(target == 'estado_especifico') {
+                    target = 'estado';
+                }
+
+                if(target == 'cidade_especifico') {
+                    target = 'cidade';
+                }
+
+                $.each(resp, function (i, obj) {
+
+                    $("#hidden-change-id").val(obj.id);
+                    $("#hidden-change-target").val(target);
+                    $("#input-change-nome").val(obj.nome);
+                    $("#input-change-sigla").val(obj.sigla);
+
+                });
+            }
         },
         erro: function(resp){
             console.erro(resp);
@@ -354,7 +407,7 @@ function loadDataEstados() {
     $.ajax({
         type: "GET",
         url: "app/ZooxTestRequestApi.php",
-        data: "action=list_estados",
+        data: "action=list_estado",
         dataType: "json",
         async: false,
         success: function(resp) {
@@ -374,6 +427,8 @@ function loadDataEstados() {
                         "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
                     "</tr>");
             });
+
+            eventsRegisters('estado');
         },
         erro: function(resp){
             console.erro(resp);
@@ -387,7 +442,7 @@ function loadDataCidades() {
     $.ajax({
         type: "GET",
         url: "app/ZooxTestRequestApi.php",
-        data: "action=list_cidades",
+        data: "action=list_cidade",
         dataType: "json",
         async: false,
         success: function(resp) {
@@ -404,9 +459,11 @@ function loadDataCidades() {
                     "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
                     "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
                     "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-                    "<td data-change-ciade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
+                    "<td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
                     "</tr>");
             });
+
+            eventsRegisters('cidade');
         },
         erro: function(resp){
             console.erro(resp);
@@ -438,4 +495,79 @@ function configureMarginTop(element_id, element_height) {
     var margin_calc    = parseInt( initial_calc - 30 ) / 2;
 
     element_id.style.top = margin_calc + "px";
+}
+
+function eventsRegisters(register_type){
+
+    if(register_type == 'estado' || register_type == 'all') {
+
+        $("[data-estado]").on('click', function () {
+            var id = $(this).parent('tr').children('td')[0].textContent;
+            requestDataListOne("estado_especifico", id, 'detail');
+
+            $("#div-lock-screen").removeClass('hide');
+            $("#div-lock-screen").show();
+            $("#div-details").removeClass('hide');
+            $("#div-details").show();
+        });
+
+        $("[data-change-estado]").on('click', function () {
+            var id = $(this).parent('tr').children('td')[0].textContent;
+
+            requestDataListOne("estado_especifico", id, "edit");
+
+            $("#div-lock-screen").removeClass('hide');
+            $("#div-lock-screen").show();
+            $("#div-changes").removeClass('hide');
+            $("#div-changes").show();
+        });
+    }
+
+    if(register_type == 'cidade' || register_type == 'all') {
+
+        $("[data-cidade]").on('click', function () {
+            var id = $(this).parent('tr').children('td')[0].textContent;
+            requestDataListOne("cidade_especifico", id, 'detail');
+
+            $("#div-lock-screen").removeClass('hide');
+            $("#div-lock-screen").show();
+            $("#div-details").removeClass('hide');
+            $("#div-details").show();
+        });
+
+        $("[data-change-cidade]").on('click', function () {
+            var id = $(this).parent('tr').children('td')[0].textContent;
+
+            requestDataListOne("cidade_especifico", id, "edit");
+
+            $("#div-lock-screen").removeClass('hide');
+            $("#div-lock-screen").show();
+            $("#div-changes").removeClass('hide');
+            $("#div-changes").show();
+        });
+    }
+}
+
+function screenClear() {
+
+    $("#div-lock-screen").addClass('hide');
+    $("#div-lock-screen").hide();
+
+    $("#div-changes").addClass('hide');
+    $("#div-changes").hide();
+
+    $("#div-details").addClass('hide');
+    $("#div-details").hide();
+
+    $("#div-tb-estados-hide").hide();
+    $("#div-tb-cidades-hide").hide();
+    $("#input-search-estado").val("");
+    $("#input-search-cidade").val("");
+
+    $("#input-insert-estado").val("");
+    $("#input-insert-estado-sigla").val("");
+
+    $("#input-insert-cidade").val("");
+    $("#input-insert-cidade-estado").val("");
+
 }

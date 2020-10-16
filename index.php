@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="./css/styles.css" type="text/css" />
 
+    <link rel="stylesheet" href="js/vendor/toastr/toastr.min.css"/>
+
 </head>
 <body>
 
@@ -27,15 +29,17 @@
     <br />
     <p>Nome</p>
     <p>
-        <input type="text" name="input-change-nome" id="input-change-estado" class="inputt" value="" />
+        <input type="text" name="input-change-nome" id="input-change-nome" class="inputt" value="" />
     </p>
     <p>Sigla/Estado</p>
     <p>
-        <input type="text" name="input-change-sigla" id="input-change-estado" class="inputt" value="" />
+        <input type="text" name="input-change-sigla" id="input-change-sigla" class="inputt" value="" />
     </p>
     <input type="button" class="btn btn-default" name="button-cancelar" id="button-cancelar" value="Cancelar" />
     <input type="button" class="btn btn-success" name="button-salvar" id="button-salvar" value="Salvar" />
     <input type="button" class="btn btn-danger" name="button-excluir" id="button-excluir" value="Excluir" />
+    <input type="hidden" style="display: none" name="hidden-change-id" id="hidden-change-id" value="" />
+    <input type="hidden" style="display: none" name="hidden-change-target" id="hidden-change-target" value="" />
 </div>
 
 <div class="container-fluid">
@@ -179,6 +183,7 @@
 </div>
 
 <script src="js/vendor/jquery/jquery-1.11.3.js"></script>
+<script src="js/vendor/toastr/toastr.min.js"></script>
 <script src="js/script.js"></script>
 
 </body>

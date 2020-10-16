@@ -11,6 +11,16 @@ class ZooxTestRequestApi
     private $collection;
     private $response;
 
+    public function setDeleteCollectionUrl($target, $id)
+    {
+        $this->url = "http://zoox.api.local/action/delete/{$target}/{$id}";
+    }
+
+    public function setUpdateCollectionUrl($target, $id, $data1, $data2)
+    {
+        $this->url = "http://zoox.api.local/action/update/{$target}/{$id}/{$data1}/{$data2}";
+    }
+
     public function setSearchCollectionUrl($target, $data)
     {
         $this->url = "http://zoox.api.local/action/search/{$target}/{$data}";
@@ -18,7 +28,7 @@ class ZooxTestRequestApi
 
     public function setInsertCollectionUrl($target, $name, $sigla)
     {
-        $this->url = "http://zoox.api.local/action/insert/{$target}/${name}/{$sigla}";
+        $this->url = "http://zoox.api.local/action/insert/{$target}/{$name}/{$sigla}";
     }
 
     public function setListOrderCollectionUrl($target, $order)
@@ -90,11 +100,12 @@ class ZooxTestRequestApi
 
 extract($_REQUEST);
 
-if($action == "list_estados") {
+if($action == "list_estado") {
 
     $listEstados = new ZooxTestRequestApi();
     $listEstados->setListCollectionUrl("estado");
     echo $listEstados->sendRequest();
+    exit;
 
 }
 
@@ -103,69 +114,117 @@ if($action == "list_estado_especifico") {
     $listEstado = new ZooxTestRequestApi();
     $listEstado->setListOneCollectionUrl("estado", $id);
     echo $listEstado->sendRequest();
+    exit;
 
 }
 
-if($action == "list_estados_ordenado") {
+if($action == "list_estado_ordenado") {
 
     $listEstadoOrder = new ZooxTestRequestApi();
     $listEstadoOrder->setListOrderCollectionUrl("estado", $order);
     echo $listEstadoOrder->sendRequest();
+    exit;
 
 }
 
 if($action == "insert_estado") {
 
     $insertEstado = new ZooxTestRequestApi();
-    $insertEstado->setInsertCollectionUrl("estado", $nome, $sigla);
+    $insertEstado->setInsertCollectionUrl("estado", urlencode($nome), urlencode($sigla));
     echo $insertEstado->sendRequest('POST');
+    exit;
 
 }
 
 if($action == "search_estado") {
 
     $searchEstado = new ZooxTestRequestApi();
-    $searchEstado->setSearchCollectionUrl("estado", $data);
+    $searchEstado->setSearchCollectionUrl("estado", urlencode($data));
     echo $searchEstado->sendRequest();
+    exit;
 
 }
 
-if($action == "list_cidades") {
+if($action == "update_estado") {
+
+    $updateEstado = new ZooxTestRequestApi();
+    $updateEstado->setUpdateCollectionUrl("estado", $id, urlencode($data1), urlencode($data2));
+    echo $updateEstado->sendRequest('POST');
+    exit;
+
+}
+
+if($action == "delete_estado") {
+
+    $deleteEstado = new ZooxTestRequestApi();
+    $deleteEstado->setDeleteCollectionUrl("estado", $id);
+    echo $deleteEstado->sendRequest('POST');
+    exit;
+
+}
+
+if($action == "list_cidade") {
 
     $listCidades = new ZooxTestRequestApi();
     $listCidades->setListCollectionUrl("cidade");
     echo $listCidades->sendRequest();
+    exit;
 
 }
 
-if($action == "list_cidade_especifica") {
+if($action == "list_cidade_especifico") {
 
     $listCidade = new ZooxTestRequestApi();
     $listCidade->setListOneCollectionUrl("cidade", $id);
     echo $listCidade->sendRequest();
+    exit;
 
 }
 
-if($action == "list_cidades_ordenado") {
+if($action == "list_cidade_ordenado") {
 
     $listCidadeOrder = new ZooxTestRequestApi();
     $listCidadeOrder->setListOrderCollectionUrl("cidade", $order);
     echo $listCidadeOrder->sendRequest();
+    exit;
 
 }
 
 if($action == "insert_cidade") {
 
     $insertCidade = new ZooxTestRequestApi();
-    $insertCidade->setInsertCollectionUrl("cidade", $nome, $sigla);
+    $insertCidade->setInsertCollectionUrl("cidade", urlencode($nome), urlencode($sigla));
     echo $insertCidade->sendRequest('POST');
+    exit;
 
 }
 
 if($action == "search_cidade") {
 
     $searchCidade = new ZooxTestRequestApi();
-    $searchCidade->setSearchCollectionUrl("cidade", $data);
+    $searchCidade->setSearchCollectionUrl("cidade", urlencode($data));
     echo $searchCidade->sendRequest();
+    exit;
 
 }
+
+if($action == "update_cidade") {
+
+    $updateCidade = new ZooxTestRequestApi();
+    $updateCidade->setUpdateCollectionUrl("cidade", $id, urlencode($data1), urlencode($data2));
+    echo $updateCidade->sendRequest('POST');
+    exit;
+
+}
+
+if($action == "delete_cidade") {
+
+    $cidadeEstado = new ZooxTestRequestApi();
+    $cidadeEstado->setDeleteCollectionUrl("cidade", $id);
+    echo $cidadeEstado->sendRequest('POST');
+    exit;
+
+}
+
+echo json_encode(['msgError'=>"Request Failed"]);
+exit;
