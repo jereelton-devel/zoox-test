@@ -1,411 +1,406 @@
 
+//Mensageiro (Tooltip style)
+toastr.options = {
+    "closeButton": true, // true/false
+    "debug": false, // true/false
+    "newestOnTop": false, // true/false
+    "progressBar": false, // true/false
+    "positionClass": "toast-bottom-center", // toast-top-right / toast-top-left / toast-bottom-right / toast-bottom-left
+    "preventDuplicates": true, //true/false,
+    "onclick": null,
+    "showDuration": "300", // in milliseconds
+    "hideDuration": "1000", // in milliseconds
+    "timeOut": "5000", // in milliseconds
+    "extendedTimeOut": "1000", // in milliseconds
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+}
+
 $(document).ready(function(){
+
+    configureMiddlePosition('div-details','180','300');
+    configureMiddlePosition('div-changes','380','300');
 
     loadDataEstados();
     loadDataCidades();
-    configureMiddlePosition('div-details','200','300');
-    configureMiddlePosition('div-changes','400','300');
+
+    eventsRegisters('all');
+
+    $("#button-toogle-tools-estado").on('click', function(){
+        $("#div-container-tools-estados").toggle();
+    });
+
+    $("#button-toogle-tools-cidade").on('click', function(){
+        $("#div-container-tools-cidades").toggle();
+    });
 
     $("#button-cancelar").on('click', function(){
-        $("#div-lock-screen").addClass('hide');
-        $("#div-lock-screen").hide();
-
-        $("#div-changes").addClass('hide');
-        $("#div-changes").hide();
+        screenClear();
     });
 
     $("#button-ok").on('click', function(){
-        $("#div-lock-screen").addClass('hide');
-        $("#div-lock-screen").hide();
-
-        $("#div-details").addClass('hide');
-        $("#div-details").hide();
+        screenClear();
     });
 
     $("#button-salvar").on('click', function() {
-        alert("Atualizar os dados");
+        var id = $("#hidden-change-id").val();
+        var target = $("#hidden-change-target").val();
+        var nome = $("#input-change-nome").val();
+        var sigla = $("#input-change-sigla").val();
 
-        if(confirm("Deseja mesmo atualizar os dados ?")) {
-            //TODO: Obter o ID armazenado durante a abertura do modal e efetuar a atualização
-            //CHAMADA AJAX - API - SLIM
+        if(nome == "" || sigla == "") {
+            toastr.error("Informe todos os parametros");
+            return false;
+        }
+
+        if(confirm("Deseja mesmo atualizar os dados ? ")) {
+
+            requestDataUpdate(target, id, nome, sigla);
+            screenClear();
+
         }
     });
 
     $("#button-excluir").on('click', function() {
-        alert("Excluir os dados");
+        var id = $("#hidden-change-id").val();
+        var target = $("#hidden-change-target").val();
 
         if(confirm("Deseja mesmo Excluir os dados ?")) {
-            //TODO: Obter o ID armazenado durante a abertura do modal e efetuar o delete
-            //CHAMADA AJAX - API - SLIM
+
+            requestDataDelete(target, id);
+            screenClear();
         }
     });
 
     $("#button-insert-estado").on('click', function(){
-        alert("Inserir Estado");
+        var nome = $("#input-insert-estado").val();
+        var sigla = $("#input-insert-estado-sigla").val();
 
-        //TODO: Validar formulario, verificar existente e inserir na base do MongoDB
+        if(nome == '' || sigla == '') {
+
+            toastr.error("Infome o Nome e a sigla do Estado");
+            return false;
+        }
+
+        if(sigla.length > 2){
+            toastr.error("Sigla Invalida");
+            return false;
+        }
+
+        requestDataInsert("estado", nome, sigla);
     });
 
     $("#button-insert-cidade").on('click', function(){
-        alert("Inserir Cidade");
+        var nome = $("#input-insert-cidade").val();
+        var sigla = $("#input-insert-cidade-estado").val();
 
-        //TODO: Validar formulario, verificar existente e inserir na base do MongoDB
+        if(nome == '' || sigla == '') {
+            toastr.error("Infome o Nome e o Estado da Cidade");
+            return false;
+        }
+
+        if(sigla.length > 2){
+            toastr.error("Estado Invalido");
+            return false;
+        }
+
+        requestDataInsert("cidade", nome, sigla);
     });
 
     $("#button-search-estado").on('click', function(){
-        alert("Buscar Estado");
+        var data = $("#input-search-estado").val();
 
-        //TODO: Buscar o estado pelo nome ou pela sigla
+        if(data == '') {
+            toastr.error("Informe um valor para buscar");
+            return false;
+        }
+
+        requestDataSearch("estado", data);
+
+        $("#div-tb-estados-hide").show();
+
     });
 
     $("#button-search-cidade").on('click', function(){
-        alert("Buscar Cidade");
+        var data = $("#input-search-cidade").val();
 
-        //TODO: Buscar a cidade pelo nome ou pelo estado
-    });
-
-    $("#select-estado").on('change', function(){
-        alert("Ordenar Estado");
-
-        //TODO: Listar novamente os dados ordenados pela opção escolhida
-    });
-
-    $("#select-cidade").on('change', function(){
-        alert("Ordenar Cidade");
-
-        //TODO: Listar novamente os dados ordenados pela opção escolhida
-    });
-
-    $("[data-estado]").on('click', function(){
-        var id = $(this).parent('tr').children('td')[0].textContent;
-        alert("Detalhar Estado ID: " + id);
-
-        $("#div-lock-screen").removeClass('hide');
-        $("#div-lock-screen").show();
-        $("#div-details").removeClass('hide');
-        $("#div-details").show();
-
-        //TODO: Listar dados do MongoDB com o id e apresentar no modal
-    });
-
-    $("[data-change-estado]").on('click', function(){
-        var id = $(this).parent('tr').children('td')[0].textContent;
-        alert("Alterar Estado ID: " + id);
-
-        $("#div-lock-screen").removeClass('hide');
-        $("#div-lock-screen").show();
-        $("#div-changes").removeClass('hide');
-        $("#div-changes").show();
-
-        //TODO: Obter os dados em tela, enviar para o modal e guardar o ID referente para poder realizar a atualização ou remoção do item
-    });
-
-    $("[data-cidade]").on('click', function(){
-        var id = $(this).parent('tr').children('td')[0].textContent;
-        alert("Detalhar Cidade ID: " + id);
-
-        $("#div-lock-screen").removeClass('hide');
-        $("#div-lock-screen").show();
-        $("#div-details").removeClass('hide');
-        $("#div-details").show();
-
-        //TODO: Listar dados do MongoDB com o id e apresentar no modal
-    });
-
-    $("[data-change-cidade]").on('click', function(){
-        var id = $(this).parent('tr').children('td')[0].textContent;
-        alert("Alterar Cidade ID: " + id);
-
-        $("#div-lock-screen").removeClass('hide');
-        $("#div-lock-screen").show();
-        $("#div-changes").removeClass('hide');
-        $("#div-changes").show();
-
-        //TODO: Obter os dados em tela, enviar para o modal e guardar o ID referente para poder realizar a atualização ou remoção do item
-    });
-
-
-    var controlPlayer = null;
-
-    $("#tb_slim_player").hide();
-
-    function getPlayerResult() {
-
-        $.ajax({
-            type: "GET",
-            url: "http://localhost/webdev/testes/slim-player-demo/api3/info/player-status",
-            data: "action=player-status",
-            dataType: "text",
-            async: false,
-            success: function(resp) {
-                if(resp === 0) {
-
-                    clearInterval(controlPlayer);
-                    $("#subview").html("O PLAYER NAO ESTA EXECUTANDO...");
-                    console.log(resp);
-
-                } else {
-
-                    $.ajax({
-                        type: "GET",
-                        url: "http://localhost/webdev/testes/slim-player-demo/api3/info/player-result",
-                        data: "action=player-result",
-                        dataType: "text",
-                        success: function(resp) {
-
-                            resp = JSON.parse(resp);
-
-                            if(resp.winner == 'api1') {
-                                playerWin = 'player 1';
-                            } else if(resp.winner == 'api2') {
-                                playerWin = 'player 2';
-                            } else {
-                                playerWin = resp.winner;
-                            }
-
-                            winner1 = (resp.winner == 'api1') ? 'winner' : '';
-                            winner2 = (resp.winner == 'api2') ? 'winner' : '';
-
-                            $("#tbody_slim_player").append("" +
-                                "<tr>" +
-                                "<td>"+resp.id+"</td>" +
-                                "<td class='"+winner1+"'>"+resp.api1_val+"</td>" +
-                                "<td>"+resp.api3_val+"</td>" +
-                                "<td class='"+winner2+"'>"+resp.api2_val+"</td>" +
-                                "<td class='text-uppercase'>"+playerWin+"" +
-                                "</tr>");
-
-                            //console.log(typeof resp, resp);
-                        }
-                    });
-
-                }
-            }
-        });
-    }
-
-    $("#bt-start-player").on('click', function() {
-
-        $("#tb_slim_player").removeClass('hide');
-        $("#tb_slim_player").show();
-
-        $("#subview").html("WELCOME TO SLIM PLAYER");
-
-        $.ajax({
-            type: "GET",
-            url: "http://localhost/webdev/testes/slim-player-demo/api3/controll/player-start",
-            data: "action=player-start",
-            dataType: "text",
-            success: function(resp) {
-                if(resp.search('Erro:') === -1) {
-                    $("#subview").html(resp);
-                    //console.log(resp);
-                } else {
-                    $("#subview").html(resp);
-                    return false;
-                }
-            }
-        });
-
-        controlPlayer = setInterval(getPlayerResult, 3000);
-        $("#bt-start-player").prop('disabled', true);
-        $("#bt-stop-player").prop('disabled', false);
-        $("#bt-reset-player").prop('disabled', true);
-
-    });
-
-    $("#bt-stop-player").on('click', function() {
-        if(confirm("Deseja cancelar o jogo ?")) {
-            $.ajax({
-                type: "GET",
-                url: "http://localhost/webdev/testes/slim-player-demo/api3/controll/player-stop",
-                data: "action=player-stop",
-                dataType: "text",
-                success: function(resp) {
-
-                    setTimeout(function() {
-                        clearInterval(controlPlayer);
-                        $("#subview").html(resp);
-                        $("#bt-start-player").prop('disabled', false);
-                        $("#bt-stop-player").prop('disabled', true);
-                        $("#bt-reset-player").prop('disabled', false);
-                        //console.log(resp);
-                    }, 3000);
-
-                }
-            });
+        if(data == '') {
+            toastr.error("Informe um valor para buscar");
+            return false;
         }
+
+        requestDataSearch("cidade", data);
+
+        $("#div-tb-cidades-hide").show();
+
     });
 
-    $("#bt-reset-player").on('click', function() {
-        if(confirm("Deseja resetar o jogo ?")) {
+    $("#button-order-estado_asc").on('click', function(){
+        var order = $("#select-estado").val();
+        requestDataSearchOrder("estado", order, 'asc');
+    });
 
-            $.ajax({
-                type: "GET",
-                url: "http://localhost/webdev/testes/slim-player-demo/api3/controll/player-reset",
-                data: "action=player-reset",
-                dataType: "text",
-                success: function(resp) {
+    $("#button-order-estado_desc").on('click', function(){
+        var order = $("#select-estado").val();
+        requestDataSearchOrder("estado", order, 'desc');
+    });
 
-                    $.ajax({
-                        type: "GET",
-                        url: "http://localhost/webdev/testes/slim-player-demo/api2/controll/player-reset",
-                        data: "action=player-reset",
-                        dataType: "text",
-                        async: false,
-                        success: function(resp) {
+    $("#button-order-cidade_asc").on('click', function(){
+        var order = $("#select-cidade").val();
+        requestDataSearchOrder("cidade", order, 'asc');
+    });
 
-                            $.ajax({
-                                type: "GET",
-                                url: "http://localhost/webdev/testes/slim-player-demo/api1/controll/player-reset",
-                                data: "action=player-reset",
-                                dataType: "text",
-                                async: false,
-                                success: function(resp) {
-                                }
-                            });
-                        }
-                    });
-
-                    $("#subview").html(resp);
-                    $("#tbody_slim_player").html("");
-                    $("#tb_slim_player").hide();
-                    $("#bt-start-player").prop('disabled', false);
-                    $("#bt-stop-player").prop('disabled', true);
-                    $("#bt-reset-player").prop('disabled', true);
-                }
-            });
-        }
+    $("#button-order-cidade_desc").on('click', function(){
+        var order = $("#select-cidade").val();
+        requestDataSearchOrder("cidade", order, 'desc');
     });
 });
 
-function requestDataInsert(generic_name, sigla, type) {}
+function requestDataInsert(target, nome, sigla) {
 
-function requestDataUpdate(id, type) {}
+    $.ajax({
+        type: "POST",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=insert_"+target+"&nome="+nome+"&sigla="+sigla,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
 
-function requestDataDelete(id, type) {}
+            if(resp.msgSuccess) {
+                toastr.success(resp.msgSuccess);
+            }
 
-function requestDataSearch(orderby, type, string) {}
+            if(resp.msgError) {
+                toastr.error(resp.msgError);
+                return false;
+            }
+
+            if(target == 'estado') {
+                loadDataEstados();
+            }
+            if(target == 'cidade') {
+                loadDataCidades();
+            }
+            screenClear();
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+}
+
+function requestDataUpdate(target, id, data1, data2) {
+
+    $.ajax({
+        type: "POST",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=update_"+target+"&id="+id+"&data1="+data1+"&data2="+data2,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(resp.msgSuccess) {
+                toastr.success(resp.msgSuccess);
+            }
+
+            if(resp.msgError) {
+                toastr.error(resp.msgError);
+            }
+
+            if(target == "estado") {
+                loadDataEstados();
+            }
+
+            if(target == "cidade") {
+                loadDataCidades();
+            }
+
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+}
+
+function requestDataDelete(target, id) {
+
+    $.ajax({
+        type: "POST",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=delete_"+target+"&id="+id,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(resp.msgSuccess) {
+                toastr.success(resp.msgSuccess);
+            }
+
+            if(resp.msgError) {
+                toastr.error(resp.msgError);
+            }
+
+            if(target == "estado") {
+                loadDataEstados();
+            }
+
+            if(target == "cidade") {
+                loadDataCidades();
+            }
+
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+}
+
+function requestDataSearch(target, data) {
+
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=search_"+target+"&data="+data,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(resp.length === undefined) {
+                $("#tbody_"+target+"_hide").html("<tr><td colspan='6'>Nada encontrado</td></tr>");
+                return false;
+            }
+
+            dataTableWrite(target, "tbody_"+target+"_hide", resp);
+            eventsRegisters(target);
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+}
+
+function requestDataSearchOrder(target, order, type) {
+
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=list_"+target+"_ordenado&order="+order+"&type="+type,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            dataTableWrite(target, "tbody_"+target+"s", resp);
+            eventsRegisters(target);
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+
+}
+
+function requestDataListOne(target, id, type) {
+
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=list_"+target+"&id="+id,
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(type == 'detail') {//Box Detalhes da Entidade
+
+                $.each(resp, function (i, obj) {
+
+                    $("#span-id-detail").html(obj.id);
+                    $("#span-nome-detail").html(obj.nome);
+                    $("#span-sigla-detail").html(obj.sigla);
+                    $("#span-dtc-detail").html(obj.data_criacao);
+                    $("#span-dtu-detail").html(obj.data_atualizacao);
+
+                });
+
+            }
+
+            if(type == 'edit') { //Box Editar Entidade
+
+                if(target == 'estado_especifico') {
+                    target = 'estado';
+                }
+
+                if(target == 'cidade_especifico') {
+                    target = 'cidade';
+                }
+
+                $.each(resp, function (i, obj) {
+
+                    $("#hidden-change-id").val(obj.id);
+                    $("#hidden-change-target").val(target);
+                    $("#input-change-nome").val(obj.nome);
+                    $("#input-change-sigla").val(obj.sigla);
+
+                });
+            }
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
+
+}
 
 function loadDataEstados() {
 
-    //TODO: Iniciar listagem dos estados assim que a tela for carregada
-    $("#tbody_estados").html("<tr>\n" +
-        "                            <td class=\"text-center\">1</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">2</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">3</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">4</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">5</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
-        "                        </tr>\n" +
-        "                        <tr>\n" +
-        "                            <td class=\"text-center\">6</td>\n" +
-        "                            <td class=\"text-center\">São Paulo</td>\n" +
-        "                            <td class=\"text-center\">SP</td>\n" +
-        "                            <td class=\"text-center\">10/10/2020</td>\n" +
-        "                            <td class=\"text-center\">13/10/2020</td>\n" +
-        "                            <td data-estado class=\"text-center\">[-]</td>\n" +
-        "                            <td data-change-estado class=\"text-center\">[+]</td>\n" +
-        "                        </tr>");
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=list_estado",
+        dataType: "json",
+        async: false,
+        success: function(resp) {
+
+            if(resp.msgError) {
+                $("#tbody_estados").html("<tr><td colspan='6'>"+resp.msgError+"</td></tr>");
+                return false;
+            }
+
+            dataTableWrite("estado", "tbody_estados", resp);
+
+            eventsRegisters('estado');
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
 
 }
 
 function loadDataCidades() {
 
-    //TODO: Iniciar listagem das cidade assim que a tela for carregada
-    $("#tbody_cidades").html("\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">1</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">2</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">3</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">4</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">5</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
-        "                    </tr>\n" +
-        "                    <tr>\n" +
-        "                        <td class=\"text-center\">6</td>\n" +
-        "                        <td class=\"text-center\">São Paulo</td>\n" +
-        "                        <td class=\"text-center\">SP</td>\n" +
-        "                        <td class=\"text-center\">10/10/2020</td>\n" +
-        "                        <td class=\"text-center\">13/10/2020</td>\n" +
-        "                        <td data-cidade class=\"text-center\">[-]</td>\n" +
-        "                        <td data-change-cidade class=\"text-center\">[+]</td>\n" +
-        "                    </tr>");
+    $.ajax({
+        type: "GET",
+        url: "app/ZooxTestRequestApi.php",
+        data: "action=list_cidade",
+        dataType: "json",
+        async: false,
+        success: function(resp) {
 
+            if(resp.msgError) {
+                $("#tbody_cidades").html("<tr><td colspan='6'>"+resp.msgError+"</td></tr>");
+                return false;
+            }
+
+            dataTableWrite("cidade", "tbody_cidades", resp);
+
+            eventsRegisters('cidade');
+        },
+        erro: function(resp){
+            console.erro(resp);
+        }
+    });
 }
 
 function configureMiddlePosition(el_id, element_width, element_height) {
@@ -432,4 +427,122 @@ function configureMarginTop(element_id, element_height) {
     var margin_calc    = parseInt( initial_calc - 30 ) / 2;
 
     element_id.style.top = margin_calc + "px";
+}
+
+function eventsRegisters(register_type){
+
+    if(register_type == 'estado' || register_type == 'all') {
+
+        $("[data-estado]").on('click', function () {
+            var id = $(this).parent('tr').children('td')[0].textContent;
+            requestDataListOne("estado_especifico", id, 'detail');
+
+            $("#div-lock-screen").removeClass('hide');
+            $("#div-lock-screen").show();
+            $("#div-details").removeClass('hide');
+            $("#div-details").show();
+        });
+
+        $("[data-change-estado]").on('click', function () {
+            var id = $(this).parent('tr').children('td')[0].textContent;
+
+            requestDataListOne("estado_especifico", id, "edit");
+
+            $("#div-lock-screen").removeClass('hide');
+            $("#div-lock-screen").show();
+            $("#div-changes").removeClass('hide');
+            $("#div-changes").show();
+        });
+    }
+
+    if(register_type == 'cidade' || register_type == 'all') {
+
+        $("[data-cidade]").on('click', function () {
+            var id = $(this).parent('tr').children('td')[0].textContent;
+            requestDataListOne("cidade_especifico", id, 'detail');
+
+            $("#div-lock-screen").removeClass('hide');
+            $("#div-lock-screen").show();
+            $("#div-details").removeClass('hide');
+            $("#div-details").show();
+        });
+
+        $("[data-change-cidade]").on('click', function () {
+            var id = $(this).parent('tr').children('td')[0].textContent;
+
+            requestDataListOne("cidade_especifico", id, "edit");
+
+            $("#div-lock-screen").removeClass('hide');
+            $("#div-lock-screen").show();
+            $("#div-changes").removeClass('hide');
+            $("#div-changes").show();
+        });
+    }
+}
+
+function screenClear() {
+
+    $("#div-lock-screen").addClass('hide');
+    $("#div-lock-screen").hide();
+
+    $("#div-changes").addClass('hide');
+    $("#div-changes").hide();
+
+    $("#div-details").addClass('hide');
+    $("#div-details").hide();
+
+    $("#div-tb-estados-hide").hide();
+    $("#div-tb-cidades-hide").hide();
+    $("#input-search-estado").val("");
+    $("#input-search-cidade").val("");
+
+    $("#input-insert-estado").val("");
+    $("#input-insert-estado-sigla").val("");
+
+    $("#input-insert-cidade").val("");
+    $("#input-insert-cidade-estado").val("");
+
+}
+
+function dataTableWrite(target, tableid, inputdata) {
+
+    if(target == 'estado') {
+
+        $("#"+tableid).html("");
+
+        $.each(inputdata, function (i, obj) {
+
+            $("#"+tableid).append(
+                "<tr>\n" +
+                "<td class=\"text-center\">" + obj.id + "</td>\n" +
+                "<td class=\"text-center\">" + obj.nome + "</td>\n" +
+                "<td class=\"text-center\">" + obj.sigla + "</td>\n" +
+                "<td class=\"text-center\">" + obj.data_criacao + "</td>\n" +
+                "<td class=\"text-center\">" + obj.data_atualizacao + "</td>\n" +
+                "<td data-estado class=\"text-center\"><img src=\"img/detail.png\" alt=\"Ver\" /></td>\n" +
+                "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" alt=\"Editar\" /></td>\n" +
+                "</tr>");
+        });
+
+    }
+
+    if(target == 'cidade') {
+
+        $("#"+tableid).html("");
+
+        $.each(inputdata, function(i, obj){
+
+            $("#"+tableid).append(
+                "<tr>\n" +
+                "<td class=\"text-center\">"+obj.id+"</td>\n" +
+                "<td class=\"text-center\">"+obj.nome+"</td>\n" +
+                "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
+                "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
+                "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
+                "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" alt=\"Ver\" /></td>\n" +
+                "<td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" alt=\"Editar\" /></td>\n" +
+                "</tr>");
+        });
+
+    }
 }
