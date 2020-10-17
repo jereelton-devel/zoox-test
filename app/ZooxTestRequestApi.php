@@ -9,37 +9,75 @@ class ZooxTestRequestApi
 
     public function setDeleteCollectionUrl($target, $id)
     {
-        $this->url = "http://zoox.api.local/action/delete/{$target}/{$id}";
+        $data_json = json_encode([
+            "collection" => $target,
+            "id" => $id
+        ], JSON_UNESCAPED_UNICODE);
+
+        $this->url = "http://zoox.api.local/action/delete/{$data_json}";
     }
 
     public function setUpdateCollectionUrl($target, $id, $data1, $data2)
     {
-        $this->url = "http://zoox.api.local/action/update/{$target}/{$id}/{$data1}/{$data2}";
+        $data_json = json_encode([
+            "collection" => $target,
+            "id" => $id,
+            "name" => $data1,
+            "sigla" => $data2
+        ], JSON_UNESCAPED_UNICODE);
+
+        $this->url = "http://zoox.api.local/action/update/{$data_json}";
     }
 
     public function setSearchCollectionUrl($target, $data)
     {
-        $this->url = "http://zoox.api.local/action/search/{$target}/{$data}";
+        $data_json = json_encode([
+            "collection" => $target,
+            "data" => $data
+        ], JSON_UNESCAPED_UNICODE);
+
+        $this->url = "http://zoox.api.local/action/search/{$data_json}";
     }
 
     public function setInsertCollectionUrl($target, $name, $sigla)
     {
-        $this->url = "http://zoox.api.local/action/insert/{$target}/{$name}/{$sigla}";
+        $data_json = json_encode([
+            "collection" => $target,
+            "name" => $name,
+            "sigla" => $sigla
+        ], JSON_UNESCAPED_UNICODE);
+
+        $this->url = "http://zoox.api.local/action/insert/{$data_json}";
     }
 
     public function setListOrderCollectionUrl($target, $order, $type)
     {
-        $this->url = "http://zoox.api.local/action/listorder/{$target}/{$order}/{$type}";
+        $data_json = json_encode([
+            "collection" => $target,
+            "order" => $order,
+            "type" => $type
+        ], JSON_UNESCAPED_UNICODE);
+
+        $this->url = "http://zoox.api.local/action/listorder/{$data_json}";
     }
 
     public function setListCollectionUrl($target)
     {
-        $this->url = "http://zoox.api.local/action/list/{$target}";
+        $data_json = json_encode([
+            "collection" => $target
+        ], JSON_UNESCAPED_UNICODE);
+
+        $this->url = "http://zoox.api.local/action/list/{$data_json}";
     }
 
     public function setListOneCollectionUrl($target, $id)
     {
-        $this->url = "http://zoox.api.local/action/listone/{$target}/{$id}";
+        $data_json = json_encode([
+            "collection" => $target,
+            "id" => $id
+        ], JSON_UNESCAPED_UNICODE);
+
+        $this->url = "http://zoox.api.local/action/listone/{$data_json}";
     }
 
     public function sendRequest($method = '')

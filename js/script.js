@@ -272,45 +272,8 @@ function requestDataSearch(target, data) {
                 return false;
             }
 
-            $("#tbody_"+target+"_hide").html("");
-
-            if(target == "estado") {
-
-                $.each(resp, function (i, obj) {
-
-                    $("#tbody_estado_hide").append(
-                        "<tr>\n" +
-                        "<td class=\"text-center\">" + obj.id + "</td>\n" +
-                        "<td class=\"text-center\">" + obj.nome + "</td>\n" +
-                        "<td class=\"text-center\">" + obj.sigla + "</td>\n" +
-                        "<td class=\"text-center\">" + obj.data_criacao + "</td>\n" +
-                        "<td class=\"text-center\">" + obj.data_atualizacao + "</td>\n" +
-                        "<td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-                        "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-                        "</tr>");
-                });
-
-                eventsRegisters('estado');
-            }
-
-            if(target == "cidade") {
-
-                $.each(resp, function(i, obj){
-
-                    $("#tbody_cidade_hide").append(
-                        "<tr>\n" +
-                        "<td class=\"text-center\">"+obj.id+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.nome+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
-                        "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-                        "<td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-                        "</tr>");
-                });
-
-                eventsRegisters('cidade');
-            }
+            dataTableWrite(target, "tbody_"+target+"_hide", resp);
+            eventsRegisters(target);
         },
         erro: function(resp){
             console.erro(resp);
@@ -328,47 +291,8 @@ function requestDataSearchOrder(target, order, type) {
         async: false,
         success: function(resp) {
 
-            if(target == "estado") {
-
-                $("#tbody_estados").html("");
-
-                $.each(resp, function (i, obj) {
-
-                    $("#tbody_estados").append(
-                        "<tr>\n" +
-                        "<td class=\"text-center\">" + obj.id + "</td>\n" +
-                        "<td class=\"text-center\">" + obj.nome + "</td>\n" +
-                        "<td class=\"text-center\">" + obj.sigla + "</td>\n" +
-                        "<td class=\"text-center\">" + obj.data_criacao + "</td>\n" +
-                        "<td class=\"text-center\">" + obj.data_atualizacao + "</td>\n" +
-                        "<td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-                        "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-                        "</tr>");
-                });
-
-                eventsRegisters('estado');
-            }
-
-            if(target == "cidade") {
-
-                $("#tbody_cidades").html("");
-
-                $.each(resp, function(i, obj){
-
-                    $("#tbody_cidades").append(
-                        "<tr>\n" +
-                        "<td class=\"text-center\">"+obj.id+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.nome+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
-                        "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-                        "<td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-                        "</tr>");
-                });
-
-                eventsRegisters('cidade');
-            }
+            dataTableWrite(target, "tbody_"+target+"s", resp);
+            eventsRegisters(target);
         },
         erro: function(resp){
             console.erro(resp);
@@ -438,21 +362,12 @@ function loadDataEstados() {
         async: false,
         success: function(resp) {
 
-            $("#tbody_estados").html("");
+            if(resp.msgError) {
+                $("#tbody_estados").html("<tr><td colspan='6'>"+resp.msgError+"</td></tr>");
+                return false;
+            }
 
-            $.each(resp, function(i, obj){
-
-                $("#tbody_estados").append(
-                    "<tr>\n" +
-                        "<td class=\"text-center\">"+obj.id+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.nome+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
-                        "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
-                        "<td data-estado class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-                        "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-                    "</tr>");
-            });
+            dataTableWrite("estado", "tbody_estados", resp);
 
             eventsRegisters('estado');
         },
@@ -473,21 +388,12 @@ function loadDataCidades() {
         async: false,
         success: function(resp) {
 
-            $("#tbody_cidades").html("");
+            if(resp.msgError) {
+                $("#tbody_cidades").html("<tr><td colspan='6'>"+resp.msgError+"</td></tr>");
+                return false;
+            }
 
-            $.each(resp, function(i, obj){
-
-                $("#tbody_cidades").append(
-                    "<tr>\n" +
-                    "<td class=\"text-center\">"+obj.id+"</td>\n" +
-                    "<td class=\"text-center\">"+obj.nome+"</td>\n" +
-                    "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
-                    "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
-                    "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
-                    "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" /></td>\n" +
-                    "<td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" /></td>\n" +
-                    "</tr>");
-            });
+            dataTableWrite("cidade", "tbody_cidades", resp);
 
             eventsRegisters('cidade');
         },
@@ -596,4 +502,47 @@ function screenClear() {
     $("#input-insert-cidade").val("");
     $("#input-insert-cidade-estado").val("");
 
+}
+
+function dataTableWrite(target, tableid, inputdata) {
+
+    if(target == 'estado') {
+
+        $("#"+tableid).html("");
+
+        $.each(inputdata, function (i, obj) {
+
+            $("#"+tableid).append(
+                "<tr>\n" +
+                "<td class=\"text-center\">" + obj.id + "</td>\n" +
+                "<td class=\"text-center\">" + obj.nome + "</td>\n" +
+                "<td class=\"text-center\">" + obj.sigla + "</td>\n" +
+                "<td class=\"text-center\">" + obj.data_criacao + "</td>\n" +
+                "<td class=\"text-center\">" + obj.data_atualizacao + "</td>\n" +
+                "<td data-estado class=\"text-center\"><img src=\"img/detail.png\" alt=\"Ver\" /></td>\n" +
+                "<td data-change-estado class=\"text-center\"><img src=\"img/edit.png\" alt=\"Editar\" /></td>\n" +
+                "</tr>");
+        });
+
+    }
+
+    if(target == 'cidade') {
+
+        $("#"+tableid).html("");
+
+        $.each(inputdata, function(i, obj){
+
+            $("#"+tableid).append(
+                "<tr>\n" +
+                "<td class=\"text-center\">"+obj.id+"</td>\n" +
+                "<td class=\"text-center\">"+obj.nome+"</td>\n" +
+                "<td class=\"text-center\">"+obj.sigla+"</td>\n" +
+                "<td class=\"text-center\">"+obj.data_criacao+"</td>\n" +
+                "<td class=\"text-center\">"+obj.data_atualizacao+"</td>\n" +
+                "<td data-cidade class=\"text-center\"><img src=\"img/detail.png\" alt=\"Ver\" /></td>\n" +
+                "<td data-change-cidade class=\"text-center\"><img src=\"img/edit.png\" alt=\"Editar\" /></td>\n" +
+                "</tr>");
+        });
+
+    }
 }
