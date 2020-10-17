@@ -370,9 +370,12 @@ After app authentication the api request your token to check your identiry corre
 
 On both cases you should be send the token in the request header with name <strong>x-Api-key</strong> and client name <strong>x-Client-Origin</strong>.
 
-- PHP Sample
+> PHP Sample
 <br />
+<pre>
 $this->headers = [
             "x-Client-Origin: zoox.test.local",
             "x-Api-key: {$this->token}",
         ];
+</pre>
+
