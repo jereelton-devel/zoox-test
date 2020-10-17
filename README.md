@@ -1,6 +1,6 @@
 # zoox-challege
 
-# How do use and test this api
+# How do use and test this app
 
 # Requirements
 - PHP 7.4
